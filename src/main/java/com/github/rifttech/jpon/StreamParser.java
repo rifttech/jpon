@@ -38,6 +38,18 @@ class StreamParser implements Parser {
 
             }
         }
+
+        emitFinalizeEvent(listeners);
+    }
+
+    private void emitFinalizeEvent(List<TraversalEvent.Listener> listeners) {
+        for (TraversalEvent.Listener listener : listeners) {
+            try {
+                listener.onFinalize();
+            } catch (Exception e) {
+                log.warn(e.getMessage(), e);
+            }
+        }
     }
 
     @Override
@@ -48,6 +60,7 @@ class StreamParser implements Parser {
     private void emit(final TraversalEvent event){
         this.listeners.forEach(s -> s.onValue(event));
     }
+
     private JsonToken resolveTag(ElementKind kind, boolean reverse){
         switch (kind){
             case ARRAY:
@@ -60,6 +73,7 @@ class StreamParser implements Parser {
             }
         }
     }
+
     private void validate(JsonParser parser, ElementKind kind){
         if(parser.getCurrentToken() != resolveTag(kind, true)){
             throw new IllegalStateException(parser.getCurrentToken().toString());
@@ -69,8 +83,6 @@ class StreamParser implements Parser {
     private void traverse(
             JsonParser parser, String propName, int depth, String path, String parentId, ElementKind kind) throws IOException {
         validate(parser, kind);
-
-        //parser.nextToken();
 
         int index = 0;
             while(parser.nextToken() != resolveTag(kind, false)){

@@ -1,5 +1,6 @@
 package com.github.rifttech.jpon;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ public class ParsersTest {
     @Test
     public void newStreamParser() throws IOException {
         Parser parser = Parsers.newStreamParser(null);
-        assert parser != null;
-        assert parser instanceof StreamParser;
+        Assert.assertNotNull(parser);
+        Assert.assertTrue(parser instanceof StreamParser);
     }
 }

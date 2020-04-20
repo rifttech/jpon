@@ -6,6 +6,7 @@ import lombok.Data;
 public class TraversalEvent {
     public interface Listener {
         void onValue(TraversalEvent event);
+        default void onFinalize(){}
     }
 
     private String key;
