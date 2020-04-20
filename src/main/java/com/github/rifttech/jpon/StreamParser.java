@@ -3,7 +3,6 @@ package com.github.rifttech.jpon;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.sun.org.apache.bcel.internal.generic.ATHROW;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -54,7 +53,7 @@ class StreamParser implements Parser {
             case ARRAY:
                 return  (reverse) ? JsonToken.START_ARRAY : JsonToken.END_ARRAY;
             case OBJECT:
-                return (reverse) ? JsonToken.START_OBJECT : JsonToken.START_OBJECT;
+                return (reverse) ? JsonToken.START_OBJECT : JsonToken.END_OBJECT;
             case OTHER:
             default: {
                 throw new IllegalArgumentException("");
@@ -63,43 +62,46 @@ class StreamParser implements Parser {
     }
     private void validate(JsonParser parser, ElementKind kind){
         if(parser.getCurrentToken() != resolveTag(kind, true)){
-            throw new IllegalStateException("");
+            throw new IllegalStateException(parser.getCurrentToken().toString());
         }
     }
 
     private void traverse(
             JsonParser parser, String propName, int depth, String path, String parentId, ElementKind kind) throws IOException {
+        validate(parser, kind);
 
-            validate(parser, kind);
+        //parser.nextToken();
 
-
-            int index = 0;
+        int index = 0;
             while(parser.nextToken() != resolveTag(kind, false)){
-                String key = "";
+                String currentName = parser.currentName();
+                parser.nextToken();
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT){
                     String currentObjectId  = UUID.randomUUID().toString();
                     traverse(
                             parser,
-                            key,
+                            currentName,
                             depth + 1,
-                            String.join(".", path, key),
+                            String.join(".", path, currentName),
                             String.join(".", parentId, currentObjectId),
                             ElementKind.OBJECT
                     );
                 }else if (parser.getCurrentToken() == JsonToken.START_ARRAY){
                     traverse(
                             parser,
-                            key,
+                            currentName,
                             depth + 1,
-                            String.join(".", path, key),
+                            String.join(".", path, currentName),
                             String.join(".", parentId),
                             ElementKind.ARRAY
                     );
                 }else {
+
                     TraversalEvent traversalEvent = new TraversalEvent();
-                    traversalEvent.setKey(propName);
+                    traversalEvent.setKey(currentName);
                     traversalEvent.setParents(parentId);
                     traversalEvent.setPath(path);
+                    traversalEvent.setValue(parser.getValueAsString());
                     emit(traversalEvent);
                 }
                 index++;
