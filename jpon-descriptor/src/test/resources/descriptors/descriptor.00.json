@@ -1,0 +1,21 @@
+{
+    "nodes": [
+        {
+            "name": "data_rows",
+            "path": "$.rows",
+            "fields": [
+                "field1",
+                "field2"
+            ]
+        },
+        {
+            "name": "data_rows_array",
+            "path": "$.rows.array",
+            "fields": [
+                "name",
+                "year"
+            ]
+
+        }
+    ]
+}
