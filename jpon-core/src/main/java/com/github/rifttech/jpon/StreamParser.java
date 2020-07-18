@@ -14,6 +14,12 @@ import java.util.UUID;
 @Slf4j
 /*package private*/
 class StreamParser implements Parser {
+
+    @Override
+    public void close() throws Exception {
+        // do nothing
+    }
+
     private enum ElementKind {OBJECT, ARRAY, OTHER}
     private final JsonParser parser;
     private final List<TraversalEvent.Listener> listeners;

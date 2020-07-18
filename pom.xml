@@ -12,6 +12,7 @@
         <module>jpon-api</module>
         <module>jpon-core</module>
         <module>jpon-descriptor</module>
+        <module>jpon-examples</module>
     </modules>
 
     <properties>
@@ -21,6 +22,24 @@
     </properties>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.github.rifttech</groupId>
+                <artifactId>jpon-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.rifttech</groupId>
+                <artifactId>jpon-descriptor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.rifttech</groupId>
+                <artifactId>jpon-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
